@@ -1,8 +1,8 @@
 module fade #(
-    parameter INC_DEC_INTERVAL = 10000,
-    parameter INC_DEC_MAX = 200,
+    parameter INC_DEC_INTERVAL = 47500,
+    parameter INC_DEC_MAX = 42,
     parameter SECTOR_INTERVAL = INC_DEC_INTERVAL * INC_DEC_MAX,
-    parameter PWM_INTERVAL = 1200,
+    parameter PWM_INTERVAL = 126,
     parameter INC_DEC_VAL = PWM_INTERVAL / INC_DEC_MAX
 )(
     input logic clk,
