@@ -1,6 +1,7 @@
 `include "fade.sv"
 `include "ws2812b.sv"
 `include "game_of_life.sv"
+`include "controller.sv"
 
 module top #(
     parameter PWM_INTERVAL = 126
@@ -12,12 +13,12 @@ module top #(
 );
 
 
-    // logic [7:0] red_data;
-    // logic [7:0] green_data;
-    // logic [7:0] blue_data;
+    logic [7:0] red_data;
+    logic [7:0] green_data;
+    logic [7:0] blue_data;
 
     logic [5:0] pixel;
-    // logic [4:0] frame;
+    logic [4:0] frame;
     // logic [10:0] address;
 
     logic [23:0] shift_reg = 24'd0;
@@ -25,13 +26,15 @@ module top #(
     logic transmit_pixel;
     logic shift;
     logic ws2812b_out;
+    logic [63:0] grid;
 
     logic [$clog2(PWM_INTERVAL) - 1:0] pwm_value_R;
     logic [$clog2(PWM_INTERVAL) - 1:0] pwm_value_G;
     logic [$clog2(PWM_INTERVAL) - 1:0] pwm_value_B;
-    logic brightness_r;
-    logic brightness_g;
-    logic brightness_b;
+    logic [6:0] brightness_r;
+    logic [6:0] brightness_g;
+    logic [6:0] brightness_b;
+
 
     fade #(
         .PWM_INTERVAL (PWM_INTERVAL)
@@ -55,8 +58,8 @@ module top #(
         .clk            (clk), 
         .load_sreg      (load_sreg), 
         .transmit_pixel (transmit_pixel), 
-        .pixel          (pixel), 
-        //.frame          (frame)
+        .pixel          (pixel),
+        .frame          (frame)
     );
 
     game_of_life u_l (
@@ -67,6 +70,16 @@ module top #(
 
     always_comb begin
         //assign color based on pixel value and fade timing
+        if (grid[pixel]) begin
+            red_data = {1'b0, brightness_r};
+            green_data = {1'b0, brightness_g};
+            blue_data = {1'b0, brightness_b};
+        end 
+        else begin
+            red_data = 8'd0;
+            green_data = 8'd0;
+            blue_data = 8'd0;
+        end 
     end 
 
 
