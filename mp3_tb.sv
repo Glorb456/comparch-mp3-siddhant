@@ -1,29 +1,38 @@
 `timescale 10ns/10ns
-`include "top.sv"
+`include "game_of_life.sv"
 
-module fade_tb;
+module game_of_life_tb;
 
-    parameter PWM_INTERVAL = 1200;
+    parameter STEP_SPEED = 200;
+    parameter INIT_FILE  = "initial_states/lwss.txt";
 
     logic clk = 0;
-    logic RGB_R;
-    logic RGB_G;
-    logic RGB_B;
+    logic [63:0] grid;
+    logic [63:0] save_grid;
 
-    top # (
-        .PWM_INTERVAL   (PWM_INTERVAL)
+    game_of_life # (
+        .STEP_SPEED(STEP_SPEED),
+        .INIT_FILE(INIT_FILE)
     ) u0 (
         .clk            (clk), 
-        .RGB_R          (RGB_R),
-        .RGB_G          (RGB_G),
-        .RGB_B          (RGB_B)
-
+        .grid           (grid)
     );
 
     initial begin
-        $dumpfile("mp2_tb.vcd");
-        $dumpvars(0, u0.pwm_value_R, u0.pwm_value_G, u0.pwm_value_B);
-        #130000000
+        $dumpfile("mp3_tb.vcd");
+        $dumpvars(0, u0.grid);
+        @(posedge clk);
+        save_grid = grid;
+        for (int k = 0; k < 32; k++)begin
+            for (int i = 0; i < 8; i++)begin
+                for (int j = 7; j >-1; j--) begin
+                    $write("%s", (grid[i*8 + j] ==1) ? "# " : ". ");
+                end
+            $display;
+            end
+            $display;
+            repeat (STEP_SPEED) @(posedge clk);
+        end 
         $finish;
     end
 
