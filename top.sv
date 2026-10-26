@@ -19,7 +19,6 @@ module top #(
 
     logic [5:0] pixel;
     logic [4:0] frame;
-    // logic [10:0] address;
 
     logic [23:0] shift_reg = 24'd0;
     logic load_sreg;
@@ -36,6 +35,7 @@ module top #(
     logic [6:0] brightness_b;
 
 
+    //wiring modules
     fade #(
         .PWM_INTERVAL (PWM_INTERVAL)
     ) u_F (
@@ -67,9 +67,8 @@ module top #(
         .grid (grid)
     );
 
-
+    //assign color based on pixel value and fade timing
     always_comb begin
-        //assign color based on pixel value and fade timing
         if (grid[pixel]) begin
             red_data = {1'b0, brightness_r};
             green_data = {1'b0, brightness_g};
@@ -82,7 +81,7 @@ module top #(
         end 
     end 
 
-
+    //serialization shift logic from example
     always_ff @(posedge clk) begin
         if (load_sreg) begin
             unique case ({ SW, BOOT })

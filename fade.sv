@@ -1,3 +1,4 @@
+//reused from mp2
 module fade #(
     parameter INC_DEC_INTERVAL = 47500,
     parameter INC_DEC_MAX = 42,

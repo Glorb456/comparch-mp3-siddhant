@@ -23,6 +23,8 @@ module game_of_life_tb;
         $dumpvars(0, u0.grid);
         @(posedge clk);
         save_grid = grid;
+
+        //prints each generation to terminal for more readable format
         for (int k = 0; k < 32; k++)begin
             for (int i = 0; i < 8; i++)begin
                 for (int j = 7; j >-1; j--) begin
